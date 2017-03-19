@@ -1,0 +1,10 @@
+plugin.tx_symfonyforms {
+    view {
+        partialRootPaths {
+            100 = EXT:symfony_forms/Resources/Private/Partials/
+        }
+        templateRootPaths {
+            100 = EXT:symfony_forms/Resources/Private/Templates/
+        }
+    }
+}

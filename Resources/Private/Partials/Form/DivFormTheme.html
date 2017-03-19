@@ -1,0 +1,111 @@
+<div xmlns="http://www.w3.org/1999/xhtml"
+     xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers"
+     data-namespace-typo3-fluid="true">
+
+    <!--
+    Disable code formatting until the corresponding :on tag, since
+    we sometimes need some really ugly constructs and
+    opening tags without closing ones.
+
+    @formatter:off
+    -->
+
+    <f:comment>
+        General structure of a form row
+    </f:comment>
+    <f:section name="FormRow">
+        <div>
+            <f:render section="FormErrors" arguments="{_all}"/>
+            <f:render section="FormLabel" arguments="{_all}"/>
+            <f:render section="FormWidget" arguments="{_all}"/>
+        </div>
+    </f:section>
+
+    <f:comment>
+        Defines form error rendering
+    </f:comment>
+    <f:section name="FormErrors">
+        <f:if condition="{errors -> f:count()} > 0">
+            <ul>
+                <f:for each="{errors}" as="error">
+                    <li>{{ error.message }}</li>
+                </f:for>
+            </ul>
+        </f:if>
+    </f:section>
+
+    <f:comment>
+        Defines how labels are rendered
+    </f:comment>
+    <f:section name="FormLabel">
+
+    </f:section>
+
+    <f:comment>
+        Renders the single form element
+    </f:comment>
+    <f:section name="FormWidget">
+
+    </f:section>
+
+    <f:comment>
+        Renders a complete form.
+    </f:comment>
+    <f:section name="Form">
+        <f:spaceless>
+        <f:for each="{form.vars}" as="val" key="key">
+            <f:variable name="{key}" value="{val}"/>
+        </f:for>
+        <f:render section="FormStart" arguments="{_all}"/>
+        <f:render section="FormWidget" arguments="{_all}"/>
+        <f:render section="FormEnd" arguments="{_all}"/>
+        </f:spaceless>
+    </f:section>
+
+    <f:comment>
+        Renders a form opening tag
+    </f:comment>
+    <f:section name="FormStart">
+        <f:variable name="method" value="{method -> sff:format.uppercase()}"/>
+        <f:if condition="{method -> sff:condition.inArray(haystack: {'GET', 'POST'})}">
+            <f:then>
+                <f:variable name="form_method" value="{method}"/>
+            </f:then>
+            <f:else>
+                <f:variable name="form_method" value="POST"/>
+            </f:else>
+        </f:if>
+
+        <form name="{name}" method="{form_method -> sff:format.lowercase()}"<f:if condition="{action}"> action="{action}"</f:if> <f:for each="{attr}" as="attrvalue" key="attrname"> {attrname}="{attrvalue}"</f:for><f:if condition="{multipart}"> enctype="multipart/form-data"</f:if>>
+        <f:if condition="{method} != {form_method}">
+            <input type="hidden" name="_method" value="{method}" />
+        </f:if>
+    </f:section>
+
+    <f:comment>
+        Renders the form closing tag
+    </f:comment>
+    <f:section name="FormEnd">
+        <f:if condition="!{form_rest}">
+            <f:render section="FormRest" arguments="{_all}"/>
+        </f:if>
+        </form>
+    </f:section>
+
+    <f:comment>
+        Renders all children that have not yet been rendered
+    </f:comment>
+    <f:section name="FormRest">
+        <f:for each="{form}" as="child">
+            <f:if condition="{child.rendered}">
+                <f:else>
+                    <f:render section="FormRow" arguments="{_all}"/>
+                </f:else>
+            </f:if>
+        </f:for>
+    </f:section>
+
+    <!--
+    //@formatter:on
+    -->
+</div>
